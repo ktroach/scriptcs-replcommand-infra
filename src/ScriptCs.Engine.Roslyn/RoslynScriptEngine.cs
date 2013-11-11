@@ -60,6 +60,7 @@ namespace ScriptCs.Engine.Roslyn
 
                 foreach (var @namespace in namespaces.Union(scriptPackSession.Namespaces).Distinct())
                 {
+                    if (@namespace.Contains("ScriptCs.ReplCommand.Pack")) continue;
                     Logger.DebugFormat("Importing namespace {0}", @namespace);
                     session.ImportNamespace(@namespace);
                 }

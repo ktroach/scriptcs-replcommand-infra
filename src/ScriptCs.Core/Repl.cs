@@ -48,7 +48,7 @@ namespace ScriptCs
                     {
                         if (ProcessCoreCommand(script, out result)) return result;
 
-                        result = ReplCommandService.ProcessCommand(script);
+                        result = ReplCommandService.ProcessCommand(script, ScriptPackSession);
 
                         if (result.ExecuteExceptionInfo != null)
                         {

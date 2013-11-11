@@ -7,7 +7,7 @@ namespace ScriptCs
 {
     public interface IReplCommandService
     {
-        ScriptResult ProcessCommand(string command);
+        ScriptResult ProcessCommand(string command, ScriptPackSession scriptPackSession);
     }
 
     public class ReplCommandService : IReplCommandService
@@ -22,14 +22,11 @@ namespace ScriptCs
             _logger = logger;
         }
 
-        public virtual ScriptResult ProcessCommand(string command)
+        public virtual ScriptResult ProcessCommand(string command, ScriptPackSession scriptPackSession)
         {
             _logger.Debug("Processing REPL Command [" + command + "] >>");
 
             var scriptResult = new ScriptResult();
-
-            var scriptPacks = new List<IScriptPack>();
-            var scriptPackSession = new ScriptPackSession(scriptPacks, null);
 
             if (_replCommands.Count.Equals(0))
             {
@@ -47,12 +44,14 @@ namespace ScriptCs
             
             if (!string.IsNullOrWhiteSpace(script))
             {
+                script = NormaliseScript(script);
+
                 if (_scriptEngine != null)
-                    scriptResult = _scriptEngine.Execute(script, 
-                        new string[0], 
-                        scriptPackSession.References, 
-                        scriptPackSession.Namespaces, 
-                        scriptPackSession);
+                    scriptResult = _scriptEngine.Execute(script,
+                                                         new string[0],
+                                                         scriptPackSession.References,
+                                                         scriptPackSession.Namespaces,
+                                                         scriptPackSession);
 
                 _logger.Debug("<< REPL Command executed.");
             }
@@ -63,6 +62,13 @@ namespace ScriptCs
             }
 
             return scriptResult;
+        }
+
+        private static string NormaliseScript(string script)
+        {
+            script = script.Replace("\r\n", string.Empty);
+            script = script.Trim();
+            return script;
         }
 
         protected virtual string ParseArguments(string command)

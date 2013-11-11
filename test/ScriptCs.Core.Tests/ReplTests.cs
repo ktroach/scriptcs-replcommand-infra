@@ -399,7 +399,7 @@ namespace ScriptCs.Tests
                         It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>(), 
                         It.IsAny<ScriptPackSession>()));
 
-                _mocks.ReplCommandService.Setup(x => x.ProcessCommand("#w \"test\""))
+                _mocks.ReplCommandService.Setup(x => x.ProcessCommand("#w \"test\"", It.IsAny<ScriptPackSession>()))
                     .Returns(new ScriptResult { ReturnValue = "test"});
 
                 _mocks.FileSystem.Setup(i => i.CurrentDirectory).Returns("C:/");
